@@ -1,0 +1,94 @@
+body {
+    background: linear-gradient(to right, #be5d5d, #85a5e6);
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+
+}
+
+.container {
+    max-width: 900px;
+    margin: 50px auto;  
+    background: #a41f1f;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(215, 18, 18, 0.1);
+}
+
+/* Tiêu đề chính */
+h2, h3 {
+    text-align: center;
+    font-weight: 600;
+    color: #c61d1d;
+    margin-bottom: 25px;
+}
+
+/* Form control */
+.form-control {
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #963333;
+}
+
+/* Căn giữa form */
+form {
+    margin: 0 auto;
+    width: 80%;
+}
+
+/* Nút */
+.btn {
+    width: 100px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* Khoảng cách giữa các nút */
+form button {
+    margin-right: 10px;
+}
+
+/* Bảng dữ liệu */
+table {
+    margin-top: 30px;
+    text-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table th {
+    background-color: #a22610;
+    color: rgb(226, 45, 45);
+}
+
+table td, table th {
+    vertical-align: middle !important;
+}
+
+/* Ảnh bìa sách (nếu có) */
+.book-cover {
+    width: 70px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* Khi hover vào hàng */
+tr:hover {
+    background-color: #ff0e0e;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    form {
+        width: 100%;
+    }
+}
+.text-red {
+    color:red;
+}
