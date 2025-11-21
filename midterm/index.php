@@ -1,4 +1,9 @@
-<?php
-header("Location: login.php");
-exit();
-?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="0; URL='login.php'" />
+</head>
+<body>
+    <p>Redirecting to login...</p>
+</body>
+</html>
