@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(to right, #be5d5d, #85a5e6);
+    background: linear-gradient(to right, #5d9ebe, #85bce6);
     font-family: "Poppins", sans-serif;
     margin: 0;
     padding: 0;
@@ -9,17 +9,17 @@ body {
 .container {
     max-width: 900px;
     margin: 50px auto;  
-    background: #a41f1f;
+    background: #f6f6f8;
     padding: 40px 50px;
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(215, 18, 18, 0.1);
+    box-shadow: 0 8px 20px rgba(243, 240, 240, 0.1);
 }
 
 /* Tiêu đề chính */
 h2, h3 {
     text-align: center;
     font-weight: 600;
-    color: #c61d1d;
+    color: #000000;
     margin-bottom: 25px;
 }
 
@@ -27,7 +27,7 @@ h2, h3 {
 .form-control {
     border-radius: 6px;
     padding: 10px;
-    border: 1px solid #963333;
+    border: 1px solid #338496;
 }
 
 /* Căn giữa form */
@@ -57,8 +57,8 @@ table {
 }
 
 table th {
-    background-color: #a22610;
-    color: rgb(226, 45, 45);
+    background-color: #656e75;
+    color: rgb(49, 62, 66);
 }
 
 table td, table th {
@@ -75,7 +75,7 @@ table td, table th {
 
 /* Khi hover vào hàng */
 tr:hover {
-    background-color: #ff0e0e;
+    background-color: #0ecbff;
 }
 
 /* Responsive cho mobile */
@@ -90,5 +90,5 @@ tr:hover {
     }
 }
 .text-red {
-    color:red;
+    color:rgb(221, 230, 230);
 }

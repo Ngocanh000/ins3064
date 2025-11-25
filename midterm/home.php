@@ -24,9 +24,22 @@ if (isset($_POST['add'])) {
         $cover_path = $target_file;
     }
 
+    // Check if book already exists (based on title + author)
+$check = mysqli_query($link, "SELECT * FROM books WHERE title='$title' AND author='$author'");
+
+if (mysqli_num_rows($check) > 0) {
+    // Book exists → update quantity increasing
+    $row = mysqli_fetch_assoc($check);
+    $newQuantity = $row['quantity'] + $quantity;
+
+    mysqli_query($link, "UPDATE books SET quantity=$newQuantity WHERE id={$row['id']}");
+} else {
+    // Book does not exist → insert new
     $query = "INSERT INTO books (title, author, category, year, quantity, link, description, cover_image)
               VALUES ('$title', '$author', '$category', $year, $quantity, '$book_link', '$description', '$cover_path')";
     mysqli_query($link, $query);
+}
+
 
     header("Location: home.php");
     exit();
