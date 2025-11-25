@@ -1,5 +1,5 @@
 FROM php:8.2-apache
 RUN docker-php-ext-install mysqli
-COPY ins3064 /var/www/html/
+COPY midterm /var/www/html/
 EXPOSE 80
 
