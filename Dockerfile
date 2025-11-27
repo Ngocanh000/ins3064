@@ -1,5 +1,6 @@
 FROM php:8.2-apache
 RUN docker-php-ext-install mysqli
-COPY midterm /var/www/html/
+WORKDIR /var/www/html
+COPY ./ins3064/midterm ./
 EXPOSE 80
 
