@@ -1,4 +1,4 @@
 <?php
-header("Location: /ins3064/midterm/login.php");
+header("Location: /login.php");
 exit();
 ?>
