@@ -2,7 +2,8 @@
 FROM php:8.2-apache
 
 # Copy toàn bộ code vào thư mục Apache
-COPY midterm/ /var/www/html/
+WORKDIR /var/www/html
+COPY ./ins3064/midterm ./
 
 # Cấp quyền nếu cần
 RUN chown -R www-data:www-data /var/www/html
