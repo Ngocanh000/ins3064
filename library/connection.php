@@ -1,12 +1,11 @@
 <?php
-$host = "sql100.byetcluster.com";
-$username = "if0_40585566";
-$password = "MẬT_KHẨU_MYSQL_CỦA_EM";
-$database = "if0_40585566_library";
+$DB_HOST = "sql100.infinityfree.com";
+$DB_USER = "if0_40585566";
+$DB_PASS = "Ngocanh000";
+$DB_NAME = "if0_40585566_library";
 
-$link = mysqli_connect($host, $username, $password, $database);
-
+$link = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 if (!$link) {
-    die("Connection failed: " . mysqli_connect_error());
+    die("Database connection error: " . mysqli_connect_error());
 }
-?>
+mysqli_set_charset($link, 'utf8mb4');

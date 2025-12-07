@@ -1,50 +1,37 @@
 <?php
 // login.php
-include "connection.php";
 session_start();
-$msg = "";
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
-
-    $stmt = mysqli_prepare($link, "SELECT id, password_hash, role FROM users WHERE username = ?");
-    mysqli_stmt_bind_param($stmt, "s", $username);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $id, $hash, $role);
-    if (mysqli_stmt_fetch($stmt)) {
-        if (password_verify($password, $hash)) {
-            $_SESSION['user_id'] = $id;
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $role;
-            header("Location: home.php");
-            exit();
-        } else {
-            $msg = "Incorrect password.";
-        }
+include 'connection.php';
+$msg = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim(mysqli_real_escape_string($link, $_POST['username']));
+    $password = md5($_POST['password']);
+    $res = mysqli_query($link, "SELECT * FROM users WHERE username='$username' AND password_hash='$password'");
+    if ($res && mysqli_num_rows($res) === 1) {
+        $user = mysqli_fetch_assoc($res);
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['role'] = $user['role'];
+        header('Location: home.php');
+        exit();
     } else {
-        $msg = "User not found.";
+        $msg = "Tên hoặc mật khẩu không đúng.";
     }
-    mysqli_stmt_close($stmt);
 }
 ?>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Login</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><title>Login</title><link rel="stylesheet" href="style.css"></head>
 <body>
-<div class="container small card">
-  <h2>Login</h2>
-  <?php if($msg) echo "<p class='msg'>".$msg."</p>"; ?>
+<div class="container small">
+  <h2>Đăng nhập</h2>
+  <?php if($msg) echo "<p class='msg'>$msg</p>"; ?>
   <form method="post">
-    <input name="username" placeholder="Username" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button name="login" type="submit">Login</button>
+    <input name="username" placeholder="Tên đăng nhập" required><br>
+    <input type="password" name="password" placeholder="Mật khẩu" required><br>
+    <button type="submit">Đăng nhập</button>
   </form>
-  <p>No account? <a href="register.php">Register</a></p>
+  <p>Chưa có tài khoản? <a href="register.php">Đăng ký</a></p>
 </div>
 </body>
 </html>

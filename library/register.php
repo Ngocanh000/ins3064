@@ -1,54 +1,35 @@
 <?php
-// register.php
-include "connection.php";
 session_start();
+include "connection.php";
 
 $msg = "";
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
 
-    if ($username === "" || $password === "") {
-        $msg = "Username and password are required.";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = trim(mysqli_real_escape_string($link, $_POST['username']));
+    $password = md5($_POST['password']);
+
+    $check = mysqli_query($link, "SELECT * FROM users WHERE username='$username'");
+    if (mysqli_num_rows($check) > 0) {
+        $msg = "Tên đăng nhập đã tồn tại!";
     } else {
-        // check exists
-        $stmt = mysqli_prepare($link, "SELECT id FROM users WHERE username = ?");
-        mysqli_stmt_bind_param($stmt, "s", $username);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_store_result($stmt);
-        if (mysqli_stmt_num_rows($stmt) > 0) {
-            $msg = "Username already exists.";
-        } else {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $ins = mysqli_prepare($link, "INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'user')");
-            mysqli_stmt_bind_param($ins, "ss", $username, $hash);
-            if (mysqli_stmt_execute($ins)) {
-                $msg = "Registration successful. <a href='login.php'>Login here</a>.";
-            } else {
-                $msg = "Database error: " . mysqli_error($link);
-            }
-        }
-        mysqli_stmt_close($stmt);
+        mysqli_query($link, "INSERT INTO users (username, password_hash) VALUES ('$username', '$password')");
+        $msg = "Đăng ký thành công! <a href='login.php'>Đăng nhập</a>";
     }
 }
 ?>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Register</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>Register</title></head>
 <body>
-<div class="container small card">
-  <h2>Register</h2>
-  <?php if($msg) echo "<p class='msg'>".$msg."</p>"; ?>
-  <form method="post">
-    <input name="username" placeholder="Username" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button name="register" type="submit">Register</button>
-  </form>
-  <p>Already have account? <a href="login.php">Login</a></p>
+<div class="container small">
+    <h2>Đăng ký</h2>
+    <?php if ($msg) echo "<p>$msg</p>"; ?>
+    <form method="post">
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Đăng ký</button>
+    </form>
+    <p>Đã có tài khoản? <a href="login.php">Login</a></p>
 </div>
 </body>
 </html>

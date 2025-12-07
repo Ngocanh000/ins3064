@@ -1,9 +1,15 @@
 <?php
-require "auth_check.php";
-require "db.php";
+session_start();
+include "connection.php";
 
-$id = $_GET["id"];
-mysqli_query($conn, "DELETE FROM books WHERE id=$id");
+if ($_SESSION["role"] !== "admin") {
+    header("Location: home.php");
+    exit();
+}
 
-header("Location: books.php");
+$id = intval($_GET["id"]);
+mysqli_query($link, "DELETE FROM books WHERE id=$id");
+
+header("Location: home.php");
+exit();
 ?>
