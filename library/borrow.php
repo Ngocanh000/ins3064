@@ -2,22 +2,33 @@
 session_start();
 include "connection.php";
 
-if (!isset($_SESSION["user_id"])) exit();
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit();
+}
 
-$uid = $_SESSION["user_id"];
-$id = $_GET["id"];
+$user_id = $_SESSION["user_id"];
+$book_id = intval($_GET["id"]);
 
-// check quantity
-$b = mysqli_fetch_assoc(mysqli_query($link, "SELECT quantity FROM books WHERE id=$id"));
-if ($b["quantity"] <= 0) die("Hết sách!");
+// Check số lượng
+$b = mysqli_fetch_assoc(mysqli_query($link,
+    "SELECT quantity FROM books WHERE id=$book_id"
+));
 
-mysqli_query($link,
-    "INSERT INTO loans (user_id, book_id, quantity) VALUES ($uid,$id,1)"
-);
+if ($b["quantity"] <= 0) {
+    die("Hết sách!");
+}
 
-mysqli_query($link,
-    "UPDATE books SET quantity=quantity-1 WHERE id=$id"
-);
+// Insert loan
+mysqli_query($link,"
+    INSERT INTO loans(user_id, book_id, status)
+    VALUES ($user_id, $book_id, 'borrowed')
+");
 
-header("Location: home.php");
+// Trừ SL
+mysqli_query($link,"
+    UPDATE books SET quantity = quantity - 1 WHERE id=$book_id
+");
+
+header("Location: loans.php");
 ?>
