@@ -21,7 +21,7 @@ if (isset($_POST["login"])) {
 
         header("Location: home.php");
         exit();
-    } else {
+    } else 
         $msg = "Sai tài khoản hoặc mật khẩu!";
     }
 }
