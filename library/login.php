@@ -19,7 +19,7 @@ if (isset($_POST["login"])) {
         $_SESSION["user_id"]  = $u["id"];
         $_SESSION["role"]     = $u["role"];
 
-        header("Location: home.php");
+       header("Location: home.php");
         exit();
     } else 
         $msg = "Sai tài khoản hoặc mật khẩu!";
