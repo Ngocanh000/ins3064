@@ -1,71 +1,70 @@
 <?php
 session_start();
 include "connection.php";
-
-if ($_SESSION["role"] != "admin") {
-    header("Location: home.php");
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+$uid  = $_SESSION['user_id'];
+$role = $_SESSION['role']; // admin | user
+if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin") {
+    die("Access denied");
 }
 
 $msg = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST["add"])) {
+    $title = $_POST["title"];
+    $author_id = $_POST["author_id"];
+    $category_id = $_POST["category_id"];
+    $year = $_POST["year"];
+    $quantity = $_POST["quantity"];
+    $description = $_POST["description"];
+    $link = $_POST["link"];
 
-    $title = mysqli_real_escape_string($link, $_POST["title"]);
-    $author = mysqli_real_escape_string($link, $_POST["author"]);
-    $category = mysqli_real_escape_string($link, $_POST["category"]);
-    $year = intval($_POST["year"]);
-    $quantity = intval($_POST["quantity"]);
-    $linkBook = mysqli_real_escape_string($link, $_POST["link"]);
-    $description = mysqli_real_escape_string($link, $_POST["description"]);
-
-    $img = "uploads/default.png";
-
+    $cover = "uploads/default.png";
     if (!empty($_FILES["cover"]["name"])) {
-        $img = "uploads/" . time() . "_" . $_FILES["cover"]["name"];
-        move_uploaded_file($_FILES["cover"]["tmp_name"], $img);
+        $cover = "uploads/default.png" . time() . "_" . $_FILES["cover"]["name"];
+        move_uploaded_file($_FILES["cover"]["tmp_name"], $cover);
     }
 
-    mysqli_query($link, "INSERT INTO authors(name) VALUES('$author')");
-    $aid = mysqli_insert_id($link);
-
-    mysqli_query($link, "INSERT INTO categories(name) VALUES('$category')");
-    $cid = mysqli_insert_id($link);
-
     mysqli_query($link, "
-        INSERT INTO books(title, author_id, category_id, year, quantity, link, description, cover_image)
-        VALUES ('$title', $aid, $cid, $year, $quantity, '$linkBook', '$description', '$img')
+        INSERT INTO books(title, author_id, category_id, year, quantity, description, cover_image, link)
+        VALUES('$title',$author_id,$category_id,'$year',$quantity,'$description','$cover','$link')
     ");
 
-    header("Location: home.php");
+    $msg = "Thêm sách thành công!";
 }
+
+$authors = mysqli_query($link, "SELECT * FROM authors");
+$categories = mysqli_query($link, "SELECT * FROM categories");
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="style.css">
-<title>Thêm sách</title>
-</head>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
 <body>
-<div class="container small">
-
-<h2>➕ Thêm sách</h2>
+<h2>Thêm sách</h2>
+<p><?= $msg ?></p>
 
 <form method="post" enctype="multipart/form-data">
-    <input name="title" placeholder="Tên sách" required>
-    <input name="author" placeholder="Tác giả" required>
-    <input name="category" placeholder="Thể loại" required>
-    <input name="year" type="number" placeholder="Năm xuất bản">
-    <input name="quantity" type="number" placeholder="Số lượng" required>
+<input name="title" placeholder="Tên sách" required>
 
-    <!-- THÊM LINK SÁCH -->
-    <input name="link" placeholder="Link đọc sách (PDF/Website)" required>
+<select name="author_id" required>
+<option value="">-- Tác giả --</option>
+<?php while($a=mysqli_fetch_assoc($authors)) echo "<option value='{$a['id']}'>{$a['name']}</option>"; ?>
+</select>
 
-    <textarea name="description" placeholder="Mô tả chi tiết"></textarea>
-    <input type="file" name="cover">
-    <button type="submit">Lưu</button>
+<select name="category_id" required>
+<option value="">-- Thể loại --</option>
+<?php while($c=mysqli_fetch_assoc($categories)) echo "<option value='{$c['id']}'>{$c['name']}</option>"; ?>
+</select>
+
+<input name="year" placeholder="Năm xuất bản">
+<input name="quantity" type="number" placeholder="Số lượng" required>
+<textarea name="description" placeholder="Mô tả"></textarea>
+<input name="link" placeholder="Link PDF / online">
+<input type="file" name="cover">
+<button name="add">Thêm</button>
 </form>
-
-</div>
 </body>
 </html>

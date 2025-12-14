@@ -2,54 +2,60 @@
 session_start();
 include "connection.php";
 
-if ($_SESSION["role"] != "admin") die("Không có quyền!");
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit;
+}
 
-$loans = mysqli_query($link,"
-    SELECT l.*, b.title, u.username
-    FROM loans l
-    JOIN books b ON l.book_id=b.id
-    JOIN users u ON l.user_id=u.id
-    ORDER BY l.borrowed_at DESC
-");
+$sql = "
+SELECT l.*, 
+       u.username, 
+       b.title
+FROM loans l
+JOIN users u ON l.user_id = u.id
+JOIN books b ON l.book_id = b.id
+ORDER BY l.borrowed_at DESC
+";
+
+$result = mysqli_query($link, $sql);
 ?>
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><link rel="stylesheet" href="style.css">
-<title>Lịch sử mượn</title></head>
+<head>
+<meta charset="utf-8">
+<title>Manage Loans</title>
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
+
 <div class="container">
+<h2>📋 Loan Management</h2>
+<a class="btn" href="home.php">⬅ Back</a>
 
-<h2>📖 Lịch sử mượn sách</h2>
-<a href="home.php">⬅ Quay lại</a><br><br>
-
-<table class="books">
+<table>
 <tr>
     <th>User</th>
-    <th>Sách</th>
-    <th>Ngày mượn</th>
-    <th>Ngày trả</th>
-    <th>Trạng thái</th>
-    <th>Trả</th>
+    <th>Book</th>
+    <th>Borrowed</th>
+    <th>Due</th>
+    <th>Status</th>
+    <th>Action</th>
 </tr>
 
-<?php while($r = mysqli_fetch_assoc($loans)): ?>
+<?php while ($row = mysqli_fetch_assoc($result)): ?>
 <tr>
-    <td><?= $r["username"] ?></td>
-    <td><?= $r["title"] ?></td>
-    <td><?= $r["borrowed_at"] ?></td>
-    <td><?= $r["returned_at"] ?: "—" ?></td>
-    <td><?= $r["status"] ?></td>
+    <td><?= $row['username'] ?></td>
+    <td><?= $row['title'] ?></td>
+    <td><?= $row['borrowed_at'] ?></td>
+    <td><?= $row['due_date'] ?></td>
+    <td><?= $row['status'] ?></td>
     <td>
-        <?php if ($r["status"] == "borrowed"): ?>
-            <a href="return.php?id=<?= $r['id'] ?>">Trả sách</a>
-        <?php else: ?>—
-        <?php endif; ?>
+        <a class="btn" href="book_detail.php?id=<?= $row['book_id'] ?>">👁 Xem sách</a>
     </td>
 </tr>
 <?php endwhile; ?>
-
 </table>
-
 </div>
+
 </body>
 </html>

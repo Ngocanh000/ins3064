@@ -2,33 +2,23 @@
 session_start();
 include "connection.php";
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location: login.php");
-    exit();
-}
+$uid = $_SESSION["user_id"];
+$book_id = $_GET["id"];
 
-$user_id = $_SESSION["user_id"];
-$book_id = intval($_GET["id"]);
+$user = mysqli_fetch_assoc(mysqli_query($link, "SELECT * FROM users WHERE id=$uid"));
+if ($user["blocked"]) die("Bạn đã bị khóa quyền mượn sách");
 
-// Check số lượng
-$b = mysqli_fetch_assoc(mysqli_query($link,
-    "SELECT quantity FROM books WHERE id=$book_id"
-));
+$book = mysqli_fetch_assoc(mysqli_query($link, "SELECT quantity FROM books WHERE id=$book_id"));
+if ($book["quantity"] <= 0) die("Hết sách");
 
-if ($b["quantity"] <= 0) {
-    die("Hết sách!");
-}
+$days = $user["loan_period_days"];
+$due = date("Y-m-d H:i:s", strtotime("+$days days"));
 
-// Insert loan
 mysqli_query($link,"
-    INSERT INTO loans(user_id, book_id, status)
-    VALUES ($user_id, $book_id, 'borrowed')
+INSERT INTO loans(user_id, book_id, due_date)
+VALUES($uid,$book_id,'$due')
 ");
 
-// Trừ SL
-mysqli_query($link,"
-    UPDATE books SET quantity = quantity - 1 WHERE id=$book_id
-");
+mysqli_query($link,"UPDATE books SET quantity=quantity-1 WHERE id=$book_id");
 
 header("Location: loans.php");
-?>

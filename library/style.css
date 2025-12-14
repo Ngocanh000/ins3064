@@ -1,38 +1,46 @@
-* {font-family: Arial; box-sizing: border-box;}
-body {background:#eef2f7; padding:40px;}
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center/cover;
+}
 
 .container {
-    width: 820px;
-    margin:auto;
-    background:white;
-    padding:25px;
-    border-radius:12px;
-}
-
-.container.small {
-    width:380px;
-}
-
-input, textarea {
-    width:100%;
-    padding:10px;
-    margin:7px 0;
+    max-width: 1000px;
+    margin: 50px auto;
+    background: rgba(255,255,255,0.95);
+    padding: 25px;
+    border-radius: 12px;
 }
 
 table {
-    width:100%;
-    border-collapse:collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
-table th, table td {
-    border:1px solid #ddd;
-    padding:10px;
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
 .btn {
-    background:#3498db;
-    padding:8px 15px;
-    color:white;
-    border-radius:5px;
-    text-decoration:none;
+    background: #4a6cf7;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.cover {
+    width: 180px;
+    border-radius: 8px;
+}
+
+.detail {
+    display: flex;
+    gap: 25px;
+}
+
+.desc {
+    margin-top: 10px;
+    line-height: 1.6;
 }

@@ -2,25 +2,25 @@
 session_start();
 include "connection.php";
 
-$loan_id = intval($_GET["id"]);
-$loan = mysqli_fetch_assoc(mysqli_query($link,
-    "SELECT * FROM loans WHERE id=$loan_id"
-));
+$id = $_GET["id"];
+$loan = mysqli_fetch_assoc(mysqli_query($link,"SELECT * FROM loans WHERE id=$id"));
 
-if (!$loan) die("Lỗi: Không có khoản mượn này!");
-
-$book_id = $loan["book_id"];
-
-// update status
 mysqli_query($link,"
-    UPDATE loans SET status='returned', returned_at=NOW()
-    WHERE id=$loan_id
+UPDATE loans SET status='returned', returned_at=NOW() WHERE id=$id
 ");
 
-// restore quantity
 mysqli_query($link,"
-    UPDATE books SET quantity = quantity + 1 WHERE id=$book_id
+UPDATE books SET quantity=quantity+1 WHERE id={$loan['book_id']}
 ");
+
+if (strtotime($loan["returned_at"]) > strtotime($loan["due_date"])) {
+    mysqli_query($link,"
+    UPDATE users SET late_count = late_count+1 WHERE id={$loan['user_id']}
+    ");
+
+    mysqli_query($link,"
+    UPDATE users SET blocked=1 WHERE late_count>=3
+    ");
+}
 
 header("Location: loans.php");
-?>

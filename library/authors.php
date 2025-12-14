@@ -1,58 +1,52 @@
 <?php
 session_start();
 include "connection.php";
+if ($_SESSION["role"] != "admin") die("Access denied");
 
-if ($_SESSION['role'] != 'admin') {
-    die("Bạn không có quyền truy cập!");
-}
+$msg = "";
 
 if (isset($_POST["add"])) {
     $name = trim($_POST["name"]);
-    mysqli_query($link, "INSERT INTO authors(name) VALUES('$name')");
+    if ($name != "") {
+        mysqli_query($link, "INSERT IGNORE INTO authors(name) VALUES('$name')");
+    }
 }
 
-if (isset($_GET["delete"])) {
-    $id = $_GET["delete"];
-    mysqli_query($link, "DELETE FROM authors WHERE id=$id");
+if (isset($_POST["update"])) {
+    $id = $_POST["id"];
+    $name = trim($_POST["name"]);
+
+    $used = mysqli_query($link,"SELECT * FROM books WHERE author_id=$id");
+    if (mysqli_num_rows($used) > 0 && $name=="") {
+        $msg = "Không thể xoá tác giả đang có sách!";
+    } else {
+        if ($name=="") $name = "[DELETED]";
+        mysqli_query($link,"UPDATE authors SET name='$name' WHERE id=$id");
+    }
 }
 
-$authors = mysqli_query($link, "SELECT * FROM authors ORDER BY id DESC");
+$authors = mysqli_query($link,"SELECT * FROM authors");
 ?>
-
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Quản lý tác giả</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
 <body>
+<h2>Quản lý tác giả</h2>
+<p style="color:red"><?= $msg ?></p>
 
-<h2>Danh sách tác giả</h2>
+<form method="post">
+<input name="name" placeholder="Tên tác giả" required>
+<button name="add">Thêm</button>
+</form>
 
-<div class="form-container">
-    <form method="POST">
-        <input type="text" name="name" placeholder="Tên tác giả" required>
-        <button name="add">Thêm</button>
-    </form>
-</div>
+<hr>
 
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>Tên tác giả</th>
-        <th>Xóa</th>
-    </tr>
-
-    <?php while ($a = mysqli_fetch_assoc($authors)) { ?>
-        <tr>
-            <td><?= $a['id'] ?></td>
-            <td><?= $a['name'] ?></td>
-            <td><a class="delete" href="?delete=<?= $a['id'] ?>">X</a></td>
-        </tr>
-    <?php } ?>
-</table>
-
-<a href="home.php" class="back">⟵ Quay lại</a>
-
+<?php while($a=mysqli_fetch_assoc($authors)){ ?>
+<form method="post">
+<input type="hidden" name="id" value="<?= $a['id'] ?>">
+<input name="name" value="<?= $a['name'] ?>">
+<button name="update">Lưu</button>
+</form>
+<?php } ?>
 </body>
 </html>
