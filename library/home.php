@@ -39,6 +39,8 @@ $result = mysqli_query($link, $sql);
 
         <?php if ($role === 'admin'): ?>
             <a class="btn" href="book_add.php">➕ Add Book</a>
+            <a class="btn" href="authors.php">➕ Manage authors</a>
+            <a class="btn" href="categories.php">➕ Manage categories</a>
             <a class="btn" href="admin_loans.php">📋 Manage Loans</a>
             <a class="btn" href="admin_users.php">👤 Users</a>
         <?php else: ?>
@@ -67,19 +69,20 @@ $result = mysqli_query($link, $sql);
             <td><?= htmlspecialchars($row['title']) ?></td>
             <td><?= htmlspecialchars($row['author']) ?></td>
             <td><?= htmlspecialchars($row['category']) ?></td>
-            <td><?= $row['publish_year'] ?></td>
+            <td><?= $row['year'] ?></td>
             <td><?= $row['quantity'] ?></td>
 
             <td>
                 <?php if ($role === 'admin'): ?>
-                    <a class="btn" href="book_edit.php?id=<?= $row['id'] ?>">✏ Sửa</a>
-                    <a class="btn" href="book_delete.php?id=<?= $row['id'] ?>"
+                    <a class="btn view" href="book_detail.php?id=<?= $row['id'] ?>">👁 Xem</a>
+                    <a class="btn edit" href="book_edit.php?id=<?= $row['id'] ?>">✏ Sửa</a>
+                    <a class="btn delete"
+                       href="book_delete.php?id=<?= $row['id'] ?>"
                        onclick="return confirm('Xóa sách này?')">🗑 Xóa</a>
                 <?php else: ?>
-                    <a class="btn" href="book_detail.php?id=<?= $row['id'] ?>">
-                        📖 Xem chi tiết
-                    </a>
+                    <a class="btn view" href="book_detail.php?id=<?= $row['id'] ?>">📖 Xem chi tiết</a>
                 <?php endif; ?>
+
             </td>
         </tr>
         <?php endwhile; ?>

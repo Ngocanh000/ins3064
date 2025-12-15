@@ -7,46 +7,57 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$id = $_GET['id'] ?? 0;
+$role = $_SESSION['role'];
+$id = intval($_GET['id']);
 
-$stmt = mysqli_prepare($link, "
-SELECT b.*, a.name AS author, c.name AS category
-FROM books b
-LEFT JOIN authors a ON b.author_id=a.id
-LEFT JOIN categories c ON b.category_id=c.id
-WHERE b.id=?
+$q = mysqli_query($link, "
+    SELECT b.*, a.name AS author, c.name AS category
+    FROM books b
+    LEFT JOIN authors a ON b.author_id = a.id
+    LEFT JOIN categories c ON b.category_id = c.id
+    WHERE b.id = $id
 ");
-mysqli_stmt_bind_param($stmt, "i", $id);
-mysqli_stmt_execute($stmt);
-$book = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-if (!$book) die("Không tìm thấy sách");
+$book = mysqli_fetch_assoc($q);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title><?= $book['title'] ?></title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <title>Chi tiết sách</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container detail">
- <img src="<?= $row['cover_image'] ?: 'uploads/default.png' ?>" 
-                     style="width:70px;border-radius:6px">
-<div>
-<h2><?= $book['title'] ?></h2>
-<p><b>Tác giả:</b> <?= $book['author'] ?></p>
-<p><b>Thể loại:</b> <?= $book['category'] ?></p>
-<p><b>Năm:</b> <?= $book['publish_year'] ?></p>
 
-<p class="desc"><?= nl2br($book['description']) ?></p>
+<div class="container">
+    <h2>📖 <?= htmlspecialchars($book['title']) ?></h2>
 
-<?php if ($book['quantity'] > 0): ?>
-<a class="btn" href="borrow.php?id=<?= $book['id'] ?>">📥 Mượn sách</a>
-<?php else: ?>
-<span class="out">Hết sách</span>
-<?php endif; ?>
+    <div class="book-detail">
+        <img src="<?= htmlspecialchars($book['cover_image']) ?>" alt="cover">
+
+        <div class="book-info">
+            <p><b>Tác giả:</b> <?= htmlspecialchars($book['author']) ?></p>
+            <p><b>Thể loại:</b> <?= htmlspecialchars($book['category']) ?></p>
+            <p><b>Năm:</b> <?= $book['year'] ?></p>
+            <p><b>Mô tả:</b></p>
+                <p><?= nl2br(htmlspecialchars($book['description'])) ?></p>
+            <?php if ($role === 'admin'): ?>
+                <!-- ADMIN: xem link -->
+                <a class="btn view" target="_blank"
+                   href="<?= htmlspecialchars($book['link']) ?>">
+                   📄 Xem link sách
+                </a>
+            <?php else: ?>
+                <!-- USER: xem mô tả -->
+                <p><b>Mô tả:</b></p>
+                <p><?= nl2br(htmlspecialchars($book['description'])) ?></p>
+            <?php endif; ?>
+
+            <br>
+            <a href="home.php">⬅ Quay lại</a>
+        </div>
+    </div>
 </div>
-</div>
+
 </body>
 </html>

@@ -1,46 +1,127 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center/cover;
+    min-height: 100vh;
+    background: 
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: #fff;
 }
 
+/* container */
 .container {
-    max-width: 1000px;
-    margin: 50px auto;
+    max-width: 1200px;
+    margin: 40px auto;
     background: rgba(255,255,255,0.95);
-    padding: 25px;
+    color: #222;
+    padding: 30px;
     border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
+/* titles */
+h2 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+/* buttons */
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 4px 2px;
+    background: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: #2980b9;
+}
+
+.btn.delete {
+    background: #e74c3c;
+}
+
+.btn.delete:hover {
+    background: #c0392b;
+}
+
+.btn.edit {
+    background: #f39c12;
+}
+
+.btn.edit:hover {
+    background: #d68910;
+}
+
+/* table */
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 15px;
 }
 
 th, td {
-    padding: 10px;
+    padding: 12px;
     border-bottom: 1px solid #ddd;
+    text-align: left;
 }
 
-.btn {
-    background: #4a6cf7;
-    color: white;
-    padding: 6px 10px;
+th {
+    background: #ecf0f1;
+}
+
+/* forms */
+form input, form select, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
     border-radius: 6px;
-    text-decoration: none;
+    border: 1px solid #ccc;
 }
 
-.cover {
-    width: 180px;
-    border-radius: 8px;
+form button {
+    background: #2ecc71;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
-.detail {
-    display: flex;
-    gap: 25px;
+form button:hover {
+    background: #27ae60;
 }
 
-.desc {
-    margin-top: 10px;
-    line-height: 1.6;
+/* login & register */
+.container.small {
+    max-width: 420px;
+}
+
+/* book cover */
+.book-cover {
+    width: 70px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+/* footer link */
+a {
+    color: #3498db;
+}
+
+a:hover {
+    text-decoration: underline;
 }

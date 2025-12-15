@@ -1,35 +1,64 @@
 <?php
-session_start(); include "connection.php";
-if (!isset($_SESSION['user_id'])) {
+session_start();
+include "connection.php";
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit;
 }
-$uid  = $_SESSION['user_id'];
-$role = $_SESSION['role']; // admin | user
-if ($_SESSION['role']!='admin') exit;
-if ($role !== 'admin') {
-    die("⛔ Bạn không có quyền truy cập");
-}
 
-if (isset($_POST['save'])) {
-$id=$_POST['id'];
-$days=$_POST['days'];
-$block=$_POST['block'];
-mysqli_query($link,
-"UPDATE users SET loan_period_days=$days, blocked=$block WHERE id=$id"
-);
-}
-$u = mysqli_query($link,"SELECT * FROM users");
+/* CHỈ LẤY USER */
+$users = mysqli_query($link, "
+    SELECT * FROM users
+    WHERE role = 'user'
+    ORDER BY id DESC
+");
 ?>
-<!DOCTYPE html><html><head><link rel='stylesheet' href='style.css'></head>
-<body><div class='container'><h2>Users</h2>
-<?php while($r=mysqli_fetch_assoc($u)): ?>
-<form method='post'>
-<input type='hidden' name='id' value='<?= $r['id'] ?>'>
-<?= $r['username'] ?> |
-Days <input name='days' value='<?= $r['loan_period_days'] ?>' size='3'> |
-Block <input type='checkbox' name='block' value='1' <?= $r['blocked']?'checked':'' ?>>
-<button name='save'>Save</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Manage Users</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+<h2>👥 Quản lý người dùng</h2>
+<a href="home.php" class="btn">⬅ Home</a>
+<br><br>
+
+<table class="books">
+<tr>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Loan days</th>
+    <th>Late</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+<?php while ($u = mysqli_fetch_assoc($users)): ?>
+<tr>
+    <td><?= $u['id'] ?></td>
+    <td><?= htmlspecialchars($u['username']) ?></td>
+    <td><?= $u['loan_period_days'] ?></td>
+    <td><?= $u['late_count'] ?></td>
+    <td>
+        <?= $u['blocked'] ? '<span style="color:red">Blocked</span>' : 'Active' ?>
+    </td>
+    <td>
+        <!-- 🔑 QUAN TRỌNG: TRUYỀN ?id= -->
+        <a class="btn edit"
+           href="admin_user_edit.php?id=<?= $u['id'] ?>">
+           ✏ Edit
+        </a>
+    </td>
+</tr>
 <?php endwhile; ?>
-</div></body></html>
+
+</table>
+</div>
+
+</body>
+</html>
