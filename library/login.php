@@ -42,7 +42,7 @@ if (isset($_POST["login"])) {
 <body>
 
 <div class="container small">
-    <h2>Login</h2>
+   <h2>Login</h2> 
     <?php if($msg) echo "<p style='color:red'>$msg</p>"; ?>
 
     <form method="post">
