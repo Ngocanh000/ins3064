@@ -47,7 +47,7 @@ if (isset($_POST["login"])) {
 
     <form method="post">
         <input name="username" placeholder="Username" required>
-        <input name="password" type="password" placeholder="Password" required>
+       <?php if($msg) echo "<p style='color:red'>$msg</p>"; ?>
         <button name="login">Đăng nhập</button>
     </form>
 
