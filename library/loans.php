@@ -36,7 +36,7 @@ if (!$result) {
 <head>
 <meta charset="utf-8">
 <title>My Loans</title>
-<link rel="stylesheet" href="style_v2.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 

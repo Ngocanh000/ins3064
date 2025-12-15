@@ -5,8 +5,11 @@ include "connection.php";
 $id = $_GET["id"];
 $loan = mysqli_fetch_assoc(mysqli_query($link,"SELECT * FROM loans WHERE id=$id"));
 
-mysqli_query($link,"
-UPDATE loans SET status='returned', returned_at=NOW() WHERE id=$id
+$now = date('Y-m-d H:i:s');
+
+mysqli_query($link, "
+    INSERT INTO loans (user_id, book_id, borrowed_at, due_date)
+    VALUES ($uid, $book_id, '$now', DATE_ADD('$now', INTERVAL 14 DAY))
 ");
 
 mysqli_query($link,"
