@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit;
 }
-
 /* ====== THÊM TÁC GIẢ ====== */
 if (isset($_POST['add'])) {
     $name = trim(mysqli_real_escape_string($link, $_POST['name']));
