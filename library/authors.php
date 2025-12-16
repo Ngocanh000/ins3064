@@ -25,7 +25,6 @@ if (isset($_POST['edit'])) {
     header("Location: authors.php");
     exit;
 }
-
 /* ====== XOÁ TÁC GIẢ (nếu chưa có sách) ====== */
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
