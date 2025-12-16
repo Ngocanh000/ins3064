@@ -15,7 +15,6 @@ if (isset($_POST['add'])) {
     header("Location: authors.php");
     exit;
 }
-
 /* ====== SỬA TÁC GIẢ ====== */
 if (isset($_POST['edit'])) {
     $id   = intval($_POST['id']);
