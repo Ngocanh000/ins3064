@@ -3,7 +3,6 @@ session_start();
 include "connection.php";
 
 $msg = "";
-
 if (isset($_POST['login'])) {
     $u = trim($_POST['username']);
     $p = md5($_POST['password']);
