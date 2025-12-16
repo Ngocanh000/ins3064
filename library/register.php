@@ -5,7 +5,6 @@ $msg = "";
 if (isset($_POST['login'])) {
     $u = trim($_POST['username']);
     $p = md5($_POST['password']);
-
     $q = mysqli_prepare($link,
         "SELECT id, password_hash, role, blocked 
          FROM users WHERE username=?"
